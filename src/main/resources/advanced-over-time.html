@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="css/form-validation.css" rel="stylesheet">
+
+	<link href="css/bootstrap-multiselect.css" rel="stylesheet">
+
+	<style>
+		/* Style for sort direction checkbox. */
+		input[type=checkbox].sort-direction {
+			-moz-appearance:    none;
+			-webkit-appearance: none;
+			-ms-appearance:     none;
+			appearance:         none;
+			width:              1.5rem;
+			height:             1.5rem;
+			border:             none;
+			border-radius:      0;
+			background-color:   transparent;
+			background-image:   url("images/sort-down.svg");
+			background-size:    contain;
+		}
+
+		input[type=checkbox].sort-direction:checked {
+			background-image: url("images/sort-up.svg");
+		}
+	</style>
+
+	<title>Homelessness AU - Advanced Analysis - Over time</title>
+</head>
+<body>
+
+<nav class="navbar navbar-light navbar-expand-sm bg-light">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">Homelessness AU</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+						aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="learn-more.html">Learn More</a>
+				</li>
+				<li class="nav-item dropdown active">
+					<a class="nav-link dropdown-toggle" href="#" id="advancedDropdown" role="button" data-toggle="dropdown"
+						 aria-haspopup="true" aria-expanded="false">Advanced Analysis</a>
+					<div class="dropdown-menu" aria-labelledby="advancedDropdown">
+						<a class="dropdown-item" href="advanced-other-factors.html">Comparing to other factors</a>
+						<a class="dropdown-item active" href="advanced-over-time.html">Over time</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<form method="post" action="advanced-over-time.html">
+	<div class="container">
+		<div class="row mt-2">
+			<div class="col">
+				<span class="d-inline-block align-middle">Analyse:</span>
+				<div class="btn-group mt-1 mt-md-0">
+					<a class="btn btn-outline-primary" href="advanced-other-factors.html">Comparing to other factors</a>
+					<a class="btn btn-primary" href="#">Over time</a>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-md">
+				<button class="btn btn-secondary d-md-none mb-2" type="button" data-toggle="collapse"
+								data-target="#filterContainer">
+					Show/Hide Filters
+				</button>
+				<div class="collapse d-md-block" id="filterContainer">
+					<div class="rounded p-1 mb-2" style="background-color: #eeeeee">
+						<b>Compare</b>
+						<div class="row no-gutters">
+							<div class="input-group">
+								<select class="form-control custom-select" id="homelessType" name="homelessType"
+												aria-label="Homelessness type" required>
+									<option value="HomelessnessData" id="homelessTypeHomeless" selected
+													th:selected="${homelessType} == 'HomelessnessData'">
+										Homelessness
+									</option>
+									<option value="AtRiskData" id="homelessTypeAtRisk" th:selected="${homelessType} == 'AtRiskData'">
+										At risk of homelessness
+									</option>
+								</select>
+								<div class="input-group-append">
+									<span class="input-group-text">between 2016 and 2018</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="rounded p-1 mb-2" style="background-color: #eeeeee">
+						<b>Filter by</b>
+						<div class="row no-gutters mb-1">
+							<div class="col-sm my-auto">
+								<label for="locationFilter" class="m-0">Location</label>
+							</div>
+							<div class="col-sm">
+								<select class="form-control" multiple id="locationFilter" name="location" required>
+									<optgroup label="LocationGroup1" th:each="locationGroup : ${locationGroups}"
+														th:label="${locationGroup.getName()}">
+										<option value="location1.1" selected th:each="location : ${locationGroup.getLocationsInGroup()}"
+														th:text="${location}" th:selected="${#lists.isEmpty(selectedLocations)} or
+          								  ${#lists.contains(selectedLocations, location)}" th:value="${location}">
+											Location 1.1
+										</option>
+									</optgroup>
+								</select>
+							</div>
+						</div>
+						<div class="row no-gutters mb-1">
+							<div class="col-sm my-auto">
+								<label for="genderFilter" class="m-0">Gender</label>
+							</div>
+							<div class="col-sm">
+								<select class="form-control" multiple id="genderFilter" name="genderFilter" required>
+									<option value="Male" selected
+													th:selected="${#lists.isEmpty(genderFilter)} or ${#lists.contains(genderFilter, 'Male')}">
+										Male
+									</option>
+									<option value="Female" selected
+													th:selected="${#lists.isEmpty(genderFilter)} or ${#lists.contains(genderFilter, 'Female')}">
+										Female
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="row no-gutters mb-1">
+							<div class="col-sm my-auto">
+								<label for="ageFilter" class="m-0">Age</label>
+							</div>
+							<div class="col-sm">
+								<select class="form-control" id="ageFilter" name="ageFilter" multiple required>
+									<option value="0-9" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '0-9')}">
+										0-9 Years
+									</option>
+									<option value="10-19" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '10-19')}">
+										10-19 Years
+									</option>
+									<option value="20-29" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '20-29')}">
+										20-29 Years
+									</option>
+									<option value="30-39" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '30-39')}">
+										30-39 Years
+									</option>
+									<option value="40-49" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '40-49')}">
+										40-49 Years
+									</option>
+									<option value="50-59" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '50-59')}">
+										50-59 Years
+									</option>
+									<option value="60+" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '60+')}">
+										60+ Years
+									</option>
+									<option value="Unknown" selected
+													th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, 'Unknown')}">
+										Unknown age
+									</option>
+								</select>
+							</div>
+						</div>
+						<small>Local Government Area statistics:</small>
+						<div class="row no-gutters mb-1">
+							<div class="col-12 col-xl my-auto">
+								Population
+							</div>
+							<div class="col-xl">
+								<div class="input-group">
+									<input class="form-control" type="number" min="0" max="1300000" value="0" name="populationFilterMin"
+												 id="populationFilterMin" aria-label="Minimum population" required onchange="updateLimits(this)"
+												 onload="updateLimits(this)" th:value="${populationFilterMin}">
+									<div class="input-group-prepend input-group-append">
+										<span class="input-group-text">-</span>
+									</div>
+									<input class="form-control" type="number" min="0" max="1300000" value="1300000"
+												 name="populationFilterMax" id="populationFilterMax" aria-label="Maximum population" required
+												 onchange="updateLimits(this)" onload="updateLimits(this)"
+												 th:value="${populationFilterMax}">
+								</div>
+							</div>
+						</div>
+						<div class="row no-gutters mb-1">
+							<div class="col-12 col-xl my-auto">
+								Population change
+							</div>
+							<div class="col-sm">
+								<select class="form-control" multiple id="populationChangeFilter" name="populationChangeFilter"
+												required aria-label="Population Change Filter">
+									<option value="decrease" selected
+													th:selected="${#lists.isEmpty(populationChangeFilter)} or
+													${#lists.contains(populationChangeFilter, 'decrease')}">
+										Decreased
+									</option>
+									<option value="increase" selected
+													th:selected="${#lists.isEmpty(populationChangeFilter)} or
+													${#lists.contains(populationChangeFilter, 'increase')}">
+										Increased
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="row no-gutters mb-2">
+							<div class="col-12 col-xl my-auto">
+								Sort by
+							</div>
+							<div class="col-xl my-auto">
+								<div class="input-group">
+									<select class="form-control custom-select" id="sortBy" name="sortBy" aria-label="Sort by" required>
+										<option value="2016" th:selected="${sortBy} == '2016'">2016 value</option>
+										<option value="2018" th:selected="${sortBy} == '2018'">2018 value</option>
+										<option value="change" th:selected="${sortBy} == 'change'">Change from 2016-2018</option>
+										<option value="percentageChange" th:selected="${sortBy} == 'percentageChange'">
+											Percentage change from 2016-2018
+										</option>
+									</select>
+									<div class="input-group-append">
+										<div class="input-group-text">
+											<input type="checkbox" class="sort-direction" name="sort-ascending" aria-label="Sort direction"
+														 th:checked="${sortByAscending}">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary w-100">Get data</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-md">
+				<div class="alert alert-danger" th:if="!${dataAvailable} and ${requestType == 'POST'}">
+					Your query matched no local government areas. Please try selecting different options.
+				</div>
+				<div class="alert alert-primary" th:if="${requestType == 'GET'}">
+					Please start by selecting some filter options and clicking "Get data".
+				</div>
+				<div class="rounded p-1 mb-2" style="background-color: #eeeeee" th:if="${dataAvailable}">
+					<table class="table table-striped table-sm">
+						<thead>
+						<tr>
+							<th scope="col" class="align-text-top border-top-0">Results</th>
+							<th scope="col" class="small font-weight-bold text-right border-top-0">
+								Change from 2016-2018
+							</th>
+							<th scope="col" class="small font-weight-bold text-right border-top-0">
+								Percentage change from 2016-2018
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<th scope="row">
+								Total
+							</th>
+							<td class="text-right" th:text="${results.total.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.total.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Average
+							</th>
+							<td class="text-right" th:text="${results.average.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.average.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Best change by value <i th:text="'(' + ${results.bestValue.valueFour} + ')'">(Location)</i>
+							</th>
+							<td class="text-right" th:text="${results.bestValue.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.bestValue.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Best change by percentage <i th:text="'(' + ${results.bestPercent.valueFour} + ')'">(Location)</i>
+							</th>
+							<td class="text-right" th:text="${results.bestPercent.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.bestPercent.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Smallest change by value <i th:text="'(' + ${results.smallestValue.valueFour} + ')'">(Location)</i>
+							</th>
+							<td class="text-right" th:text="${results.smallestValue.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.smallestValue.valueOne, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Smallest change by percentage <i
+											th:text="'(' + ${results.smallestPercent.valueFour} + ')'">(Location)</i>
+							</th>
+							<td class="text-right" th:text="${results.smallestPercent.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.smallestPercent.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Worst change by value <i th:text="'(' + ${results.worstValue.valueFour} + ')'">(Location)</i>
+							</th>
+							<td class="text-right" th:text="${results.worstValue.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.worstValue.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								Worst change by percentage <i th:text="'(' + ${results.worstPercent.valueFour} + ')'">(Location)</i>
+							</th>
+							<td class="text-right" th:text="${results.worstPercent.valueOne}">
+								+xxx
+							</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(results.worstPercent.valueTwo, 1, 1)}">
+								+xx%
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="rounded p-1 mb-2" style="background-color: #eeeeee" th:if="${dataAvailable}">
+					<b>Data table</b>
+					<table class="table table-striped table-sm">
+						<thead>
+						<tr>
+							<th scope="col" class="border-top-0">LGA Name</th>
+							<th scope="col" class="small font-weight-bold text-right border-top-0"
+									th:text="(${homelessType} == 'HomelessnessData') ?
+									'Number of homeless people in 2016' : 'Number of people at risk of homelessness in 2016'">
+								Number of homeless people in 2016
+							</th>
+							<th scope="col" class="small font-weight-bold text-right border-top-0"
+									th:text="(${homelessType} == 'HomelessnessData') ?
+									'Number of homeless people in 2018' : 'Number of people at risk of homelessness in 2018'">
+								Number of homeless people in 2018
+							</th>
+							<th scope="col" class="small font-weight-bold text-right border-top-0">Change from 2016-2018</th>
+							<th scope="col" class="small font-weight-bold text-right border-top-0">
+								Percentage change from 2016-2018
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="row : ${tableData}">
+							<th scope="row" th:text="${row.lgaName}">Melbourne</th>
+							<td class="text-right" th:text="${row.numAffected2016}">200</td>
+							<td class="text-right" th:text="${row.numAffected2018}">300</td>
+							<td class="text-right" th:text="${row.changeNum}">+100</td>
+							<td class="text-right" th:text="${#numbers.formatPercent(row.changePercent, 1, 1)}">+50%</td>
+						</tr>
+						</tbody>
+					</table>
+					<div class="ml-auto d-flex justify-content-end">
+						<button type="submit" class="btn btn-sm btn-secondary" formaction="advanced-over-time.csv">
+							Download CSV
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+<!-- This must always be at the end of the page -->
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+
+<!-- This is required for dropdown menus -->
+<script src="js/bootstrap-multiselect.js"></script>
+<script type="text/javascript">
+	// This function returns a method which applies a style to an element when there's no options selected.
+	function applyValidityStyleGenerator (id) {
+		return function () {
+			if ($(id + " option:selected").length === 0) {
+				$(id).siblings("div").children("button.multiselect").addClass("form-control-invalid");
+			}
+			else {
+				$(id).siblings("div").children("button.multiselect").removeClass("form-control-invalid");
+			}
+		}
+	}
+
+	// This function updates the limits for the range inputs so that the min cannot be higher than the max
+	function updateLimits (input) {
+		const baseID = input.id.slice(0, -3);
+		const minInput = document.getElementById(baseID + "Min");
+		const maxInput = document.getElementById(baseID + "Max");
+
+		minInput.setAttribute("max", maxInput.value);
+		maxInput.setAttribute("min", minInput.value);
+	}
+
+	// Initialise Dropdowns
+	$(document).ready(function () {
+		$("#homelessType").multiselect({
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			inheritClass: true,
+		});
+		$("#locationFilter").multiselect({
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			enableClickableOptGroups: true,
+			enableCollapsibleOptGroups: true,
+			enableFiltering: true,
+			enableCaseInsensitiveFiltering: true,
+			includeSelectAllOption: true,
+			collapseOptGroupsByDefault: true,
+			numberDisplayed: 2,
+			indentGroupOptions: true,
+			inheritClass: true,
+			onChange: applyValidityStyleGenerator("#locationFilter"),
+			onSelectAll: applyValidityStyleGenerator("#locationFilter"),
+			onDeselectAll: applyValidityStyleGenerator("#locationFilter")
+		});
+		$('#genderFilter').multiselect({
+			includeSelectAllOption: true,
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			inheritClass: true,
+			onChange: applyValidityStyleGenerator("#genderFilter"),
+			onSelectAll: applyValidityStyleGenerator("#genderFilter"),
+			onDeselectAll: applyValidityStyleGenerator("#genderFilter")
+		});
+		$('#ageFilter').multiselect({
+			includeSelectAllOption: true,
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			numberDisplayed: 2,
+			inheritClass: true,
+			onChange: applyValidityStyleGenerator("#ageFilter"),
+			onSelectAll: applyValidityStyleGenerator("#ageFilter"),
+			onDeselectAll: applyValidityStyleGenerator("#ageFilter")
+		});
+		$('#populationChangeFilter').multiselect({
+			includeSelectAllOption: true,
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			inheritClass: true,
+			onChange: applyValidityStyleGenerator("#populationChangeFilter"),
+			onSelectAll: applyValidityStyleGenerator("#populationChangeFilter"),
+			onDeselectAll: applyValidityStyleGenerator("#populationChangeFilter")
+		});
+		$("#sortBy").multiselect({
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			inheritClass: true,
+		});
+	});
+</script>
+</body>
+</html>

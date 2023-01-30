@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/index.css" rel="stylesheet">
+
+	<title>Homelessness AU</title>
+</head>
+<body>
+
+<nav class="navbar navbar-light navbar-expand-sm bg-light">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">Homelessness AU</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+						aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="learn-more.html">Learn More</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="advancedDropdown" role="button" data-toggle="dropdown"
+						 aria-haspopup="true" aria-expanded="false">Advanced Analysis</a>
+					<div class="dropdown-menu" aria-labelledby="advancedDropdown">
+						<a class="dropdown-item" href="advanced-other-factors.html">Comparing to other factors</a>
+						<a class="dropdown-item" href="advanced-over-time.html">Over time</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<div class="container-fluid d-flex flex-column justify-content-center align-items-center index-header">
+	<div class="p-3 rounded-lg text-light d-flex flex-column justify-content-center align-items-center index-header-box">
+		<h2 class="text-center">Homelessness in Australia is climbing</h2>
+		<ul>
+			<li>For every Local Government Area, there are 3 children who are without a home.</li>
+			<li>On any given night, there are 104,768 people who will be in a state of homelessness.</li>
+			<li>Of all Australians, 150,087 are likely to enter a state of homelessness.</li>
+		</ul>
+		<h5>That is, over 1% of Australians are either in a state of homelessness, or will be at some point in their
+			lives.</h5>
+		<a class="btn btn-primary btn-lg" href="#aboutUs">FIND OUT MORE</a>
+	</div>
+</div>
+
+<div class="container pt-5 mb-5" id="aboutUs">
+	<div class="text-center">
+		<h1>
+			About Homelessness AU
+		</h1>
+		<h2>
+			Discovery of Australian homelessness has never been easier.
+		</h2>
+	</div>
+	<h4>
+		Who we are:
+	</h4>
+	<p>
+		At Homelessness AU, we aim to provide an easy and fast way to look into the details of the issue of homelessness in
+		Australia. We provide the tools required to analyse the data, right in your web browser.
+	</p>
+	<h4>
+		Next steps:
+	</h4>
+	<div class="row justify-content-center">
+		<div class="col-lg-4 col-md mb-1 mb-md-0">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Learn more</h5>
+					<p class="card-text">
+						Discover Australian homelessness statistics through a simple search interface.
+					</p>
+					<a href="learn-more.html" class="btn btn-primary stretched-link">See statistics</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md mb-1 mb-md-0">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Advanced Analysis</h5>
+					<p class="card-text">
+						Take a deep dive into our database utilising our advanced tools and sophisticated interface.
+					</p>
+					<a href="advanced-other-factors.html" class="btn btn-primary stretched-link">Analyse our data</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- This must always be at the end of the page -->
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

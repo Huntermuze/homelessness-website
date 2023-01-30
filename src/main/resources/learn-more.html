@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="css/bootstrap-multiselect.css" rel="stylesheet">
+
+	<link href="css/form-validation.css" rel="stylesheet">
+
+	<title>Homelessness AU - Learn More</title>
+</head>
+<body>
+
+<nav class="navbar navbar-light navbar-expand-sm bg-light">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">Homelessness AU</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+						aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="learn-more.html">Learn More</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="advancedDropdown" role="button" data-toggle="dropdown"
+						 aria-haspopup="true" aria-expanded="false">Advanced Analysis</a>
+					<div class="dropdown-menu" aria-labelledby="advancedDropdown">
+						<a class="dropdown-item" href="advanced-other-factors.html">Comparing to other factors</a>
+						<a class="dropdown-item" href="advanced-over-time.html">Over time</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<form action="learn-more.html" method="get" autocomplete="off">
+	<div class="container">
+		<div class="row mt-2">
+			<div class="col-sm-auto mb-1 mb-md-0">
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+					<label class="btn btn-outline-primary text-nowrap active">
+						<input type="radio" name="homelessnessType" value="HomelessnessData" id="homeless" autocomplete="off"
+									 checked th:checked="${homelessnessType == null} or ${homelessnessType} == 'HomelessnessData'">
+						Homeless
+					</label>
+					<label class="btn btn-outline-primary text-nowrap">
+						<input type="radio" name="homelessnessType" value="AtRiskData" id="atRisk" autocomplete="off"
+									 th:checked="${homelessnessType} == 'AtRiskData'"> At Risk
+					</label>
+				</div>
+			</div>
+			<div class="col">
+				<select class="form-control custom-select" id="locationName" name="locationName" aria-label="Select Location"
+								required>
+					<option disabled selected>Select a State or LGA...</option>
+					<option th:each="name : ${locationNames}" value="Test Location" selected th:value="${name}"
+									th:text="${name}" th:selected="${name} == ${locationName}">
+						Test Location
+					</option>
+				</select>
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-primary" type="submit">Search</button>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-md-3">
+				<button class="btn btn-secondary d-md-none mb-2" type="button" data-toggle="collapse"
+								data-target="#filterContainer">
+					Show/Hide Filters
+				</button>
+				<div class="collapse d-md-block" id="filterContainer">
+					<div class="form-group">
+						<label for="genderFilter">Gender</label><br>
+						<select class="form-control" id="genderFilter" name="genderFilter" multiple required>
+							<option value="Male" selected
+											th:selected="${#lists.isEmpty(genderFilter)} or ${#lists.contains(genderFilter, 'Male')}">
+								Male
+							</option>
+							<option value="Female" selected
+											th:selected="${#lists.isEmpty(genderFilter)} or ${#lists.contains(genderFilter, 'Female')}">
+								Female
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="ageFilter">Age</label><br>
+						<select class="form-control" id="ageFilter" name="ageFilter" multiple required>
+							<option value="0-9" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '0-9')}">
+								0-9 Years
+							</option>
+							<option value="10-19" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '10-19')}">
+								10-19 Years
+							</option>
+							<option value="20-29" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '20-29')}">
+								20-29 Years
+							</option>
+							<option value="30-39" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '30-39')}">
+								30-39 Years
+							</option>
+							<option value="40-49" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '40-49')}">
+								40-49 Years
+							</option>
+							<option value="50-59" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '50-59')}">
+								50-59 Years
+							</option>
+							<option value="60+" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, '60+')}">
+								60+ Years
+							</option>
+							<option value="Unknown" selected
+											th:selected="${#lists.isEmpty(ageFilter)} or ${#lists.contains(ageFilter, 'Unknown')}">
+								Unknown age
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="sortBy">Sort</label><br>
+						<select class="form-control" id="sortBy" name="sortBy" required>
+							<option value="best" selected th:selected="${sortBy == null} or ${sortBy} == 'best'">
+								Best (lowest first)
+							</option>
+							<option value="worst" th:selected="${sortBy} == 'worst'">Worst (highest first)</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-primary w-100 mb-2">
+						Refresh
+					</button>
+				</div>
+			</div>
+			<div class="col-md">
+				<div class="alert alert-danger" th:if="!${dataAvailable} and !${#strings.isEmpty(locationName)}">
+					That LGA or State wasn't found. Please try a different one.
+				</div>
+				<div class="alert alert-primary" th:if="${#strings.isEmpty(locationName)}">
+					Please start by selecting a LGA or State by using the menu above.
+				</div>
+				<div class="text-right font-weight-bold mb-1" th:if="${dataAvailable}"
+						 th:text="'Total ' + (${homelessnessType} == 'HomelessnessData' ? 'homeless' : 'at risk') + ' in ' +
+						 ${locationName} + ': ' + ${dataTotal}">
+					Total homeless in [LGA/StateName]: 15
+				</div>
+				<table class="table table-striped table-sm" th:if="${dataAvailable}">
+					<thead>
+					<tr>
+						<th scope="col">Age</th>
+						<th scope="col">Gender</th>
+						<th scope="col"
+								th:text="(${homelessnessType} == 'HomelessnessData' ? 'Homeless' : 'At risk') + ' in ' + ${locationName}">
+							Homeless in [LGA/StateName]
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="row : ${tableData}">
+						<th scope="row" th:text="${row.age}">0-9</th>
+						<th scope="row" th:text="${row.gender}">Male</th>
+						<td th:text="${row.count}">10</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>
+
+<!-- This must always be at the end of the page -->
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+
+<!-- This is required for dropdown menus -->
+<script src="js/bootstrap-multiselect.js"></script>
+<script type="text/javascript">
+	// This function returns a method which applies a style to an element when there's no options selected.
+	function applyValidityStyleGenerator (id) {
+		return function () {
+			if ($(id + " option:selected").length === 0) {
+				$(id).siblings("div").children("button.multiselect").addClass("form-control-invalid");
+			}
+			else {
+				$(id).siblings("div").children("button.multiselect").removeClass("form-control-invalid");
+			}
+		}
+	}
+
+	// Initialise Dropdowns
+	$(document).ready(function () {
+		$('#locationName').multiselect({
+			buttonWidth: "100%",
+			enableFiltering: true,
+			enableCaseInsensitiveFiltering: true,
+			filterPlaceholder: "Search for States or LGAs...",
+			nonSelectedText: "Select a State or LGA...",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			onChange: applyValidityStyleGenerator("#locationName"),
+			onSelectAll: applyValidityStyleGenerator("#locationName"),
+			onDeselectAll: applyValidityStyleGenerator("#locationName")
+		});
+		$('#genderFilter').multiselect({
+			includeSelectAllOption: true,
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			onChange: applyValidityStyleGenerator("#genderFilter"),
+			onSelectAll: applyValidityStyleGenerator("#genderFilter"),
+			onDeselectAll: applyValidityStyleGenerator("#genderFilter")
+		});
+		$('#ageFilter').multiselect({
+			includeSelectAllOption: true,
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			onChange: applyValidityStyleGenerator("#ageFilter"),
+			onSelectAll: applyValidityStyleGenerator("#ageFilter"),
+			onDeselectAll: applyValidityStyleGenerator("#ageFilter")
+		});
+		$('#sortBy').multiselect({
+			buttonWidth: "100%",
+			widthSynchronizationMode: "ifPopupIsSmaller",
+			onChange: applyValidityStyleGenerator("#sortBy"),
+			onSelectAll: applyValidityStyleGenerator("#sortBy"),
+			onDeselectAll: applyValidityStyleGenerator("#sortBy")
+		});
+	});
+</script>
+</body>
+</html>

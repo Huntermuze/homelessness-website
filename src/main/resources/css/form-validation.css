@@ -1,0 +1,5 @@
+.form-control:invalid,
+.form-control-invalid {
+	border-color:     #f5c6cb !important;
+	background-color: #f8d7da !important;
+}
